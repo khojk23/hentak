@@ -5,6 +5,8 @@ import { RESTAURANT, FEATURED_DISHES } from "@/lib/data";
 import { getSlideshowImages, getOpeningHours } from "@/lib/supabase";
 import HeroCarousel from "@/components/HeroCarousel";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Hentak. — Nouvelle Manipuri Cuisine",
 };

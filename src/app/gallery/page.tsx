@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import { RESTAURANT, GALLERY_IMAGES } from "@/lib/data";
 import { getGalleryImages } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = { title: "Gallery" };
 
 export default async function GalleryPage() {

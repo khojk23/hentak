@@ -79,51 +79,43 @@ export type Settings = Record<string, string>;
 
 // ── Helpers ────────────────────────────────────────────
 export async function getMenuItems(): Promise<MenuItem[]> {
-  const { data } = await supabase
-    .from("menu_items")
-    .select("*")
-    .eq("available", true)
-    .order("sort_order");
-  return data ?? [];
+  try {
+    const { data } = await supabase.from("menu_items").select("*").eq("available", true).order("sort_order");
+    return data ?? [];
+  } catch { return []; }
 }
 
 export async function getAllMenuItems(): Promise<MenuItem[]> {
-  const { data } = await supabaseAdmin
-    .from("menu_items")
-    .select("*")
-    .order("category")
-    .order("sort_order");
-  return data ?? [];
+  try {
+    const { data } = await supabaseAdmin.from("menu_items").select("*").order("category").order("sort_order");
+    return data ?? [];
+  } catch { return []; }
 }
 
 export async function getGalleryImages(): Promise<GalleryImage[]> {
-  const { data } = await supabase
-    .from("gallery_images")
-    .select("*")
-    .order("sort_order");
-  return data ?? [];
+  try {
+    const { data } = await supabase.from("gallery_images").select("*").order("sort_order");
+    return data ?? [];
+  } catch { return []; }
 }
 
 export async function getOpeningHours(): Promise<OpeningHour[]> {
-  const { data } = await supabase
-    .from("opening_hours")
-    .select("*")
-    .order("day_index");
-  return data ?? [];
+  try {
+    const { data } = await supabase.from("opening_hours").select("*").order("day_index");
+    return data ?? [];
+  } catch { return []; }
 }
 
 export async function getSlideshowImages(): Promise<SlideshowImage[]> {
-  const { data } = await supabase
-    .from("slideshow_images")
-    .select("*")
-    .eq("active", true)
-    .order("sort_order");
-  return data ?? [];
+  try {
+    const { data } = await supabase.from("slideshow_images").select("*").eq("active", true).order("sort_order");
+    return data ?? [];
+  } catch { return []; }
 }
 
 export async function getSettings(): Promise<Settings> {
-  const { data } = await supabase
-    .from("restaurant_settings")
-    .select("key, value");
-  return Object.fromEntries((data ?? []).map((r) => [r.key, r.value]));
+  try {
+    const { data } = await supabase.from("restaurant_settings").select("key, value");
+    return Object.fromEntries((data ?? []).map((r) => [r.key, r.value]));
+  } catch { return {}; }
 }
