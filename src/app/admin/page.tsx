@@ -7,16 +7,16 @@ import SeedButton from "./SeedButton";
 export default async function AdminDashboard() {
   if (!await getSession()) redirect("/admin/login");
 
-  const [{ count: menuCount }, { count: galleryCount }, { count: orderCount }] = await Promise.all([
+  const [{ count: menuCount }, { count: galleryCount }, { count: reservationCount }] = await Promise.all([
     supabaseAdmin.from("menu_items").select("*", { count: "exact", head: true }),
     supabaseAdmin.from("gallery_images").select("*", { count: "exact", head: true }),
-    supabaseAdmin.from("menu_items").select("*", { count: "exact", head: true }).eq("available", false),
+    supabaseAdmin.from("reservations").select("*", { count: "exact", head: true }).eq("status", "pending"),
   ]);
 
   const cards = [
-    { label: "Menu Items",      count: menuCount    ?? 0, href: "/admin/menu",     icon: "🍽",  color: "border-saffron-700/50" },
-    { label: "Gallery Photos",  count: galleryCount ?? 0, href: "/admin/gallery",  icon: "📷", color: "border-blue-700/50"    },
-    { label: "Unavailable",     count: orderCount   ?? 0, href: "/admin/menu",     icon: "⚠️",  color: "border-red-700/50"     },
+    { label: "Menu Items",        count: menuCount        ?? 0, href: "/admin/menu",         icon: "🍽",  color: "border-saffron-700/50" },
+    { label: "Gallery Photos",    count: galleryCount     ?? 0, href: "/admin/gallery",      icon: "📷", color: "border-blue-700/50"    },
+    { label: "Pending Bookings",  count: reservationCount ?? 0, href: "/admin/reservations", icon: "🗓",  color: "border-green-700/50"   },
   ];
 
   const actions = [
@@ -24,8 +24,9 @@ export default async function AdminDashboard() {
     { label: "Upload Photo",     href: "/admin/gallery",  icon: "📤", desc: "Add a photo to the gallery" },
     { label: "Edit Hours",       href: "/admin/hours",    icon: "🕐",  desc: "Change opening times" },
     { label: "Restaurant Info",  href: "/admin/settings", icon: "✏️",  desc: "Update name, phone, address" },
-    { label: "View Orders",      href: "/admin/orders",   icon: "📋", desc: "See live table orders" },
-    { label: "Generate QR Codes",href: "/admin/qr-codes", icon: "📱", desc: "Print QR codes for tables" },
+    { label: "View Orders",       href: "/admin/orders",       icon: "📋", desc: "See live table orders" },
+    { label: "Reservations",      href: "/admin/reservations", icon: "🗓",  desc: "View and manage bookings" },
+    { label: "Generate QR Codes", href: "/admin/qr-codes",    icon: "📱", desc: "Print QR codes for tables" },
   ];
 
   return (

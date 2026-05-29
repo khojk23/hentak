@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export interface ReservationPayload {
   name: string;
@@ -189,6 +190,18 @@ export async function POST(request: NextRequest) {
       // Return success anyway — booking is accepted, email issue is internal
     }
   }
+
+  // ── Save to Supabase ─────────────────────────────────
+  await supabaseAdmin.from("reservations").insert({
+    name:   payload.name,
+    email:  payload.email,
+    phone:  payload.phone,
+    date:   payload.date,
+    time:   payload.time,
+    guests: payload.guests,
+    notes:  payload.notes ?? "",
+    status: "pending",
+  });
 
   return NextResponse.json({
     success: true,
