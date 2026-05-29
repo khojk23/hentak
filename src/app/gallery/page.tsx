@@ -1,10 +1,15 @@
 import Image from "next/image";
 import type { Metadata } from "next";
-import { GALLERY_IMAGES, RESTAURANT } from "@/lib/data";
+import { RESTAURANT, GALLERY_IMAGES } from "@/lib/data";
+import { getGalleryImages } from "@/lib/supabase";
 
 export const metadata: Metadata = { title: "Gallery" };
 
-export default function GalleryPage() {
+export default async function GalleryPage() {
+  const dbImages = await getGalleryImages();
+  const images = dbImages.length > 0
+    ? dbImages.map((img) => ({ src: img.url, alt: img.alt }))
+    : GALLERY_IMAGES;
   return (
     <div className="min-h-screen bg-ink-950 pt-[108px]">
       {/* Header */}
@@ -20,7 +25,7 @@ export default function GalleryPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
         {/* Masonry */}
         <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-          {GALLERY_IMAGES.map((img, i) => (
+          {images.map((img, i) => (
             <div key={i} className="break-inside-avoid relative overflow-hidden rounded-xl group ring-1 ring-ink-700">
               <Image
                 src={img.src}
@@ -29,6 +34,7 @@ export default function GalleryPage() {
                 height={600}
                 className="w-full h-auto object-cover transition-transform duration-500 group-hover:scale-105"
                 sizes="(max-width:640px) 100vw,(max-width:1024px) 50vw,33vw"
+                unoptimized={img.src.includes("supabase")}
               />
               <div className="absolute inset-0 bg-ink-950/0 group-hover:bg-ink-950/30 transition-colors duration-300" />
             </div>

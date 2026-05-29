@@ -5,9 +5,10 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 
 const NAV = [
-  { href: "/admin",          label: "Dashboard", icon: "📊" },
-  { href: "/admin/menu",     label: "Menu",      icon: "🍽"  },
-  { href: "/admin/gallery",  label: "Gallery",   icon: "📷" },
+  { href: "/admin",           label: "Dashboard", icon: "📊" },
+  { href: "/admin/menu",      label: "Menu",      icon: "🍽"  },
+  { href: "/admin/slideshow", label: "Slideshow", icon: "🖼"  },
+  { href: "/admin/gallery",   label: "Gallery",   icon: "📷" },
   { href: "/admin/hours",    label: "Hours",     icon: "🕐"  },
   { href: "/admin/settings", label: "Settings",  icon: "⚙️"  },
   { href: "/admin/orders",   label: "Orders",    icon: "📋" },

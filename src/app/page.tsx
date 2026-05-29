@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Metadata } from "next";
-import { RESTAURANT, HOURS, FEATURED_DISHES } from "@/lib/data";
+import { RESTAURANT, FEATURED_DISHES } from "@/lib/data";
+import { getSlideshowImages, getOpeningHours } from "@/lib/supabase";
 import HeroCarousel from "@/components/HeroCarousel";
 
 export const metadata: Metadata = {
@@ -64,7 +65,15 @@ const PHILOSOPHY = [
   },
 ];
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [slideshowImages, dbHours] = await Promise.all([
+    getSlideshowImages(),
+    getOpeningHours(),
+  ]);
+
+  const slides = slideshowImages.map((s) => ({ src: s.url, alt: s.alt }));
+  const hours  = dbHours.length > 0 ? dbHours : null;
+
   return (
     <>
       <script
@@ -74,7 +83,7 @@ export default function HomePage() {
 
       {/* ── HERO ─────────────────────────────────────── */}
       <div className="pt-[108px]">
-        <HeroCarousel />
+        <HeroCarousel slides={slides} />
 
         {/* Text block — solid dark, zero blending */}
         <div className="bg-ink-950 py-16 sm:py-20 border-b border-saffron-700/30">
@@ -223,10 +232,10 @@ export default function HomePage() {
               <h2 className="font-black text-4xl sm:text-5xl text-white uppercase tracking-tight mb-2">Opening Hours</h2>
               <div className="w-10 h-0.5 bg-saffron-500 mb-8" />
               <div className="divide-y divide-ink-700">
-                {HOURS.map((h) => (
-                  <div key={h.day} className={`flex justify-between items-start py-3.5 ${!h.open ? "opacity-30" : ""}`}>
+                {(hours ?? []).map((h) => (
+                  <div key={h.day} className={`flex justify-between items-start py-3.5 ${!h.is_open ? "opacity-30" : ""}`}>
                     <span className="font-bold text-white text-sm w-28 shrink-0">{h.day}</span>
-                    <span className={`text-xs text-right leading-relaxed ${h.open ? "text-ink-300" : "italic text-ink-500"}`}>{h.hours}</span>
+                    <span className={`text-xs text-right leading-relaxed ${h.is_open ? "text-ink-300" : "italic text-ink-500"}`}>{h.hours}</span>
                   </div>
                 ))}
               </div>

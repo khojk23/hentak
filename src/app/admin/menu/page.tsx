@@ -1,21 +1,23 @@
 "use client";
 
-import { useState, useEffect, FormEvent } from "react";
+import { useState, useEffect, useRef, FormEvent } from "react";
+import Image from "next/image";
 import type { MenuItem } from "@/lib/supabase";
 
 const CATEGORIES = ["Starters", "Mains", "Desserts", "Drinks"];
 const TAGS       = ["", "Signature", "Chef's Pick", "Vegetarian", "Must Try", "New", "Non-Alcoholic"];
-
-const EMPTY = { category: "Starters", name: "", meitei: "", description: "", price: 0, tag: "", available: true };
+const EMPTY      = { category: "Starters", name: "", meitei: "", description: "", price: 0, tag: "", image_url: "", available: true };
 
 export default function AdminMenuPage() {
-  const [items,    setItems]    = useState<MenuItem[]>([]);
-  const [active,   setActive]   = useState("Starters");
-  const [loading,  setLoading]  = useState(true);
-  const [showForm, setShowForm] = useState(false);
-  const [editing,  setEditing]  = useState<MenuItem | null>(null);
-  const [form,     setForm]     = useState(EMPTY);
-  const [saving,   setSaving]   = useState(false);
+  const [items,        setItems]        = useState<MenuItem[]>([]);
+  const [active,       setActive]       = useState("Starters");
+  const [loading,      setLoading]      = useState(true);
+  const [showForm,     setShowForm]     = useState(false);
+  const [editing,      setEditing]      = useState<MenuItem | null>(null);
+  const [form,         setForm]         = useState(EMPTY);
+  const [saving,       setSaving]       = useState(false);
+  const [imgUploading, setImgUploading] = useState(false);
+  const imgRef = useRef<HTMLInputElement>(null);
 
   async function load() {
     setLoading(true);
@@ -30,8 +32,28 @@ export default function AdminMenuPage() {
   function openAdd() { setEditing(null); setForm(EMPTY); setShowForm(true); }
   function openEdit(item: MenuItem) {
     setEditing(item);
-    setForm({ category: item.category, name: item.name, meitei: item.meitei ?? "", description: item.description, price: item.price, tag: item.tag ?? "", available: item.available });
+    setForm({ category: item.category, name: item.name, meitei: item.meitei ?? "", description: item.description, price: item.price, tag: item.tag ?? "", image_url: item.image_url ?? "", available: item.available });
     setShowForm(true);
+  }
+
+  async function handleImagePick(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImgUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      fd.append("bucket", "menu-images");
+      const res  = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.error ?? "Upload failed");
+      setForm(p => ({ ...p, image_url: json.url }));
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Upload failed");
+    } finally {
+      setImgUploading(false);
+      if (imgRef.current) imgRef.current.value = "";
+    }
   }
 
   async function handleSave(e: FormEvent) {
@@ -77,12 +99,10 @@ export default function AdminMenuPage() {
           <button key={c} onClick={() => setActive(c)}
             className={`px-4 py-2 rounded-full text-xs font-bold tracking-widest uppercase whitespace-nowrap transition-colors ${
               active === c ? "bg-saffron-600 text-white" : "bg-ink-800 text-ink-400 hover:text-white border border-ink-600"
-            }`}
-          >{c}</button>
+            }`}>{c}</button>
         ))}
       </div>
 
-      {/* Items list */}
       {loading ? (
         <div className="text-center py-12 text-ink-500">Loading…</div>
       ) : filtered.length === 0 ? (
@@ -90,36 +110,71 @@ export default function AdminMenuPage() {
       ) : (
         <div className="space-y-2">
           {filtered.map(item => (
-            <div key={item.id} className={`bg-ink-900 border rounded-xl px-4 py-3 flex items-center gap-3 transition-colors ${item.available ? "border-ink-700" : "border-ink-800 opacity-50"}`}>
-              <div className="flex-1 min-w-0">
+            <div key={item.id} className={`bg-ink-900 border rounded-xl flex items-center gap-3 transition-colors overflow-hidden ${item.available ? "border-ink-700" : "border-ink-800 opacity-50"}`}>
+              {item.image_url ? (
+                <div className="relative w-16 h-16 shrink-0">
+                  <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="64px" unoptimized={item.image_url.includes("supabase")} />
+                </div>
+              ) : (
+                <div className="w-16 h-16 shrink-0 bg-ink-800 flex items-center justify-center text-2xl text-ink-600">🍽</div>
+              )}
+              <div className="flex-1 min-w-0 py-3">
                 <p className="text-white font-semibold text-sm truncate">{item.name}</p>
                 <p className="text-ink-500 text-xs truncate">{item.description}</p>
               </div>
               <span className="text-saffron-400 font-black text-sm shrink-0">₹{item.price}</span>
-
-              {/* Available toggle */}
               <button onClick={() => toggleAvailable(item)}
                 className={`w-10 h-5 rounded-full relative transition-colors shrink-0 ${item.available ? "bg-green-600" : "bg-ink-700"}`}>
                 <span className={`absolute top-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform ${item.available ? "right-0.5" : "left-0.5"}`} />
               </button>
-
-              <button onClick={() => openEdit(item)} className="text-ink-500 hover:text-saffron-400 transition-colors text-xs px-2">Edit</button>
-              <button onClick={() => deleteItem(item.id)} className="text-ink-700 hover:text-red-400 transition-colors text-xs">✕</button>
+              <button onClick={() => openEdit(item)} className="text-ink-500 hover:text-saffron-400 text-xs px-2 py-3">Edit</button>
+              <button onClick={() => deleteItem(item.id)} className="text-ink-700 hover:text-red-400 text-xs pr-3">✕</button>
             </div>
           ))}
         </div>
       )}
 
-      {/* Add/Edit form modal */}
+      {/* Add/Edit modal */}
       {showForm && (
         <>
           <div className="fixed inset-0 bg-ink-950/80 z-50 backdrop-blur-sm" onClick={() => setShowForm(false)} />
-          <div className="fixed bottom-0 left-0 right-0 z-50 bg-ink-900 border-t border-ink-700 rounded-t-2xl p-5 max-h-[90vh] overflow-y-auto md:max-w-lg md:mx-auto md:rounded-2xl md:border md:top-1/2 md:-translate-y-1/2 md:bottom-auto">
+          <div className="fixed bottom-0 left-0 right-0 z-50 bg-ink-900 border-t border-ink-700 rounded-t-2xl p-5 max-h-[92vh] overflow-y-auto md:max-w-lg md:mx-auto md:rounded-2xl md:border md:top-1/2 md:-translate-y-1/2 md:bottom-auto">
             <div className="flex justify-between items-center mb-5">
               <h2 className="font-black text-white text-lg uppercase">{editing ? "Edit Item" : "New Item"}</h2>
               <button onClick={() => setShowForm(false)} className="text-ink-500 hover:text-white">✕</button>
             </div>
+
             <form onSubmit={handleSave} className="space-y-4">
+              {/* Dish photo */}
+              <div>
+                <label className="block text-[10px] font-bold tracking-widest uppercase text-ink-500 mb-1.5">Dish Photo</label>
+                <div className="flex items-center gap-3">
+                  <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-ink-800 border border-ink-600 shrink-0 flex items-center justify-center">
+                    {form.image_url ? (
+                      <Image src={form.image_url} alt="Dish" fill className="object-cover" sizes="80px" unoptimized={form.image_url.includes("supabase")} />
+                    ) : (
+                      <span className="text-3xl">🍽</span>
+                    )}
+                    {imgUploading && (
+                      <div className="absolute inset-0 bg-ink-950/70 flex items-center justify-center">
+                        <svg className="w-5 h-5 animate-spin text-saffron-400" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex-1 space-y-2">
+                    <button type="button" onClick={() => imgRef.current?.click()} disabled={imgUploading}
+                      className="w-full py-2.5 border border-ink-600 hover:border-saffron-500 text-ink-300 hover:text-saffron-400 text-xs font-bold tracking-widest uppercase rounded-lg transition-colors">
+                      {imgUploading ? "Uploading…" : form.image_url ? "Change Photo" : "Upload from Camera"}
+                    </button>
+                    {form.image_url && (
+                      <button type="button" onClick={() => setForm(p => ({ ...p, image_url: "" }))}
+                        className="w-full py-1.5 text-red-500 hover:text-red-400 text-xs transition-colors">Remove photo</button>
+                    )}
+                  </div>
+                </div>
+                <input ref={imgRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleImagePick} />
+              </div>
+
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[10px] font-bold tracking-widest uppercase text-ink-500 mb-1">Category</label>
@@ -139,12 +194,12 @@ export default function AdminMenuPage() {
                 <input value={form.name} onChange={e => setForm(p => ({ ...p, name: e.target.value }))} required className={inp} placeholder="Dish name" />
               </div>
               <div>
-                <label className="block text-[10px] font-bold tracking-widest uppercase text-ink-500 mb-1">Meitei Script (optional)</label>
+                <label className="block text-[10px] font-bold tracking-widest uppercase text-ink-500 mb-1">Meitei Script</label>
                 <input value={form.meitei} onChange={e => setForm(p => ({ ...p, meitei: e.target.value }))} className={inp} placeholder="ꯁꯤꯡꯖꯨ" />
               </div>
               <div>
                 <label className="block text-[10px] font-bold tracking-widest uppercase text-ink-500 mb-1">Description *</label>
-                <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} required rows={2} className={`${inp} resize-none`} placeholder="Ingredients, preparation…" />
+                <textarea value={form.description} onChange={e => setForm(p => ({ ...p, description: e.target.value }))} required rows={2} className={`${inp} resize-none`} />
               </div>
               <div>
                 <label className="block text-[10px] font-bold tracking-widest uppercase text-ink-500 mb-1">Price (₹) *</label>
@@ -157,7 +212,7 @@ export default function AdminMenuPage() {
                 </button>
                 <span className="text-ink-400 text-sm">Available on menu</span>
               </div>
-              <button type="submit" disabled={saving}
+              <button type="submit" disabled={saving || imgUploading}
                 className="w-full py-3.5 bg-saffron-600 hover:bg-saffron-500 disabled:opacity-60 text-white font-bold tracking-widest uppercase text-xs rounded-lg transition-colors">
                 {saving ? "Saving…" : editing ? "Save Changes" : "Add Item"}
               </button>

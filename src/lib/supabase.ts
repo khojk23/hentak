@@ -21,6 +21,7 @@ export interface MenuItem {
   description: string;
   price:       number;
   tag?:        string;
+  image_url?:  string;
   available:   boolean;
   sort_order:  number;
   created_at:  string;
