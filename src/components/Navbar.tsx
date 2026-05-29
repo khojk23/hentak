@@ -32,11 +32,11 @@ export default function Navbar() {
               <Image src="/hentak-logo.jpg" alt="Hentak logo" width={48} height={48} className="w-full h-full object-contain" priority />
             </div>
             <div className="leading-none">
-              <p className="text-foreground font-black text-xl tracking-[0.15em] uppercase group-hover:text-saffron-600 transition-colors">
-                HENTAK.
+              <p className="text-foreground font-display text-xl group-hover:text-saffron-600 transition-colors">
+                Hentak.
               </p>
-              <p className="text-ink-500 text-[9px] tracking-[0.22em] uppercase mt-0.5">
-                Nouvelle Manipuri Cuisine
+              <p className="text-ink-500 text-[10px] tracking-wider mt-0.5">
+                Manipuri Cuisine
               </p>
             </div>
           </Link>
@@ -45,14 +45,14 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-5">
             {NAV_LINKS.map((link) => (
               <Link key={link.href} href={link.href}
-                className={`text-xs font-semibold tracking-widest uppercase transition-colors ${
+                className={`text-sm font-medium transition-colors ${
                   pathname === link.href ? "text-saffron-600" : "text-ink-400 hover:text-foreground"
                 }`}
               >{link.label}</Link>
             ))}
             <ThemeToggle />
             <Link href="/reservations"
-              className="ml-1 px-5 py-2.5 bg-saffron-600 hover:bg-saffron-500 text-white text-xs font-bold tracking-widest uppercase rounded transition-colors">
+              className="ml-1 px-5 py-2.5 bg-saffron-600 hover:bg-saffron-500 text-white text-sm font-medium rounded-full transition-colors">
               Book a Table
             </Link>
           </div>

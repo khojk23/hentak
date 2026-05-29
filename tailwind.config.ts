@@ -50,8 +50,9 @@ const config: Config = {
         paper: { DEFAULT: "#f9f5ee", dark: "#f0ead9" },
       },
       fontFamily: {
-        sans:  ["Inter", "system-ui", "sans-serif"],
-        serif: ["Georgia", "Cambria", "serif"],
+        sans:    ["var(--font-sans)", "Nunito", "system-ui", "sans-serif"],
+        display: ["var(--font-display)", "Cormorant Garamond", "Georgia", "serif"],
+        serif:   ["Georgia", "Cambria", "serif"],
       },
     },
   },

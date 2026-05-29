@@ -47,7 +47,9 @@ html {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: var(--font-sans), "DM Sans", system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.65;
 }
 
 /* Date picker icon — visible on both themes */
