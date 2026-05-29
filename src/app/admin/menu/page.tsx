@@ -17,6 +17,7 @@ export default function AdminMenuPage() {
   const [form,         setForm]         = useState(EMPTY);
   const [saving,       setSaving]       = useState(false);
   const [imgUploading, setImgUploading] = useState(false);
+  const [uploadError,  setUploadError]  = useState("");
   const imgRef = useRef<HTMLInputElement>(null);
 
   async function load() {
@@ -40,16 +41,23 @@ export default function AdminMenuPage() {
     const file = e.target.files?.[0];
     if (!file) return;
     setImgUploading(true);
+    setUploadError("");
     try {
+      // Warn about size before even trying
+      if (file.size > 4_500_000) {
+        throw new Error("Image too large (max 4.5 MB). Please compress it first.");
+      }
       const fd = new FormData();
       fd.append("file", file);
       fd.append("bucket", "menu-images");
       const res  = await fetch("/api/admin/upload-image", { method: "POST", body: fd });
-      const json = await res.json();
-      if (!res.ok) throw new Error(json.error ?? "Upload failed");
-      setForm(p => ({ ...p, image_url: json.url }));
+      let json: { url?: string; error?: string };
+      try { json = await res.json(); } catch { throw new Error(`Server error (${res.status})`); }
+      if (!res.ok) throw new Error(json.error ?? `Upload failed (${res.status})`);
+      if (!json.url) throw new Error("No URL returned from server");
+      setForm(p => ({ ...p, image_url: json.url! }));
     } catch (err) {
-      alert(err instanceof Error ? err.message : "Upload failed");
+      setUploadError(err instanceof Error ? err.message : "Upload failed");
     } finally {
       setImgUploading(false);
       if (imgRef.current) imgRef.current.value = "";
@@ -164,7 +172,7 @@ export default function AdminMenuPage() {
                   <div className="flex-1 space-y-2">
                     <button type="button" onClick={() => imgRef.current?.click()} disabled={imgUploading}
                       className="w-full py-2.5 border border-ink-600 hover:border-saffron-500 text-ink-300 hover:text-saffron-400 text-xs font-bold tracking-widest uppercase rounded-lg transition-colors">
-                      {imgUploading ? "Uploading…" : form.image_url ? "Change Photo" : "Upload from Camera"}
+                      {imgUploading ? "Uploading…" : form.image_url ? "Change Photo" : "📷 Upload Photo"}
                     </button>
                     {form.image_url && (
                       <button type="button" onClick={() => setForm(p => ({ ...p, image_url: "" }))}
@@ -172,7 +180,10 @@ export default function AdminMenuPage() {
                     )}
                   </div>
                 </div>
-                <input ref={imgRef} type="file" accept="image/*" capture="environment" className="hidden" onChange={handleImagePick} />
+                {uploadError && (
+                  <p className="mt-2 text-xs text-red-400 bg-red-950/40 border border-red-800 rounded-lg px-3 py-2">{uploadError}</p>
+                )}
+                <input ref={imgRef} type="file" accept="image/*" className="hidden" onChange={handleImagePick} />
               </div>
 
               <div className="grid grid-cols-2 gap-3">

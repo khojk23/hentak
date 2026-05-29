@@ -3,12 +3,18 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { MENU } from "@/lib/data";
+import { LinkPreview } from "@/components/ui/link-preview";
 
 interface CartItem {
   id:       string;
   name:     string;
   price:    number;
   quantity: number;
+}
+
+interface LiveMenuItem {
+  id: string; category: string; name: string; meitei?: string;
+  description: string; price: number; tag?: string; image_url?: string;
 }
 
 type PageStatus = "browsing" | "submitting" | "success" | "error";
@@ -20,11 +26,36 @@ export default function OrderingClient({ tableId }: { tableId: string }) {
   const [activeTab,    setActiveTab]    = useState<string>(CATEGORIES[0]);
   const [cart,         setCart]         = useState<CartItem[]>([]);
   const [showCart,     setShowCart]     = useState(false);
+  const [liveItems,    setLiveItems]    = useState<Record<string, LiveMenuItem[]>>({});
   const [status,       setStatus]       = useState<PageStatus>("browsing");
   const [orderId,      setOrderId]      = useState("");
   const [customerName, setCustomerName] = useState("");
   const [notes,        setNotes]        = useState("");
   const [errorMsg,     setErrorMsg]     = useState("");
+
+  // Fetch live menu items (with image_url)
+  useEffect(() => {
+    fetch("/api/menu")
+      .then((r) => r.json())
+      .then((json) => {
+        if (!json.items?.length) return;
+        const grouped: Record<string, LiveMenuItem[]> = {};
+        for (const item of json.items as LiveMenuItem[]) {
+          if (!grouped[item.category]) grouped[item.category] = [];
+          grouped[item.category].push(item);
+        }
+        setLiveItems(grouped);
+      })
+      .catch(() => {});
+  }, []);
+
+  function getImageUrl(itemId: string): string | undefined {
+    for (const items of Object.values(liveItems)) {
+      const found = items.find((i) => i.id === itemId);
+      if (found?.image_url) return found.image_url;
+    }
+    return undefined;
+  }
 
   // Restore cart from localStorage
   useEffect(() => {
@@ -213,7 +244,16 @@ export default function OrderingClient({ tableId }: { tableId: string }) {
                 <div className="flex-1 min-w-0">
                   <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h3 className="text-white font-bold text-sm leading-snug">{item.name}</h3>
+                      {getImageUrl(item.id) ? (
+                        <LinkPreview imageSrc={getImageUrl(item.id)!} imageAlt={item.name} width={220} height={160}>
+                          <h3 className="text-white font-bold text-sm leading-snug">
+                            {item.name}
+                            <span className="ml-1 text-saffron-600 text-[10px]">✦</span>
+                          </h3>
+                        </LinkPreview>
+                      ) : (
+                        <h3 className="text-white font-bold text-sm leading-snug">{item.name}</h3>
+                      )}
                       {item.meitei && (
                         <p className="text-ink-600 text-[10px] mt-0.5">{item.meitei}</p>
                       )}
