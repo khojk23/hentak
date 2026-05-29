@@ -26,11 +26,19 @@ function adminClient(): SupabaseClient {
   return _admin;
 }
 
-// Proxy lets callers keep using `supabase.from(...)` syntax unchanged
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const supabase      = new Proxy({} as SupabaseClient, { get: (_, p) => (publicClient() as unknown as Record<PropertyKey, unknown>)[p as string] });
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const supabaseAdmin = new Proxy({} as SupabaseClient, { get: (_, p) => (adminClient()  as unknown as Record<PropertyKey, unknown>)[p as string] });
+// Proxy — defers client creation to first use; binds methods so `this` is correct.
+function makeProxy(factory: () => SupabaseClient): SupabaseClient {
+  return new Proxy({} as SupabaseClient, {
+    get(_, prop) {
+      const client = factory();
+      const val = (client as unknown as Record<PropertyKey, unknown>)[prop as string];
+      return typeof val === "function" ? (val as (...a: unknown[]) => unknown).bind(client) : val;
+    },
+  });
+}
+
+export const supabase      = makeProxy(publicClient);
+export const supabaseAdmin = makeProxy(adminClient);
 
 // ── Types ──────────────────────────────────────────────
 export interface MenuItem {
