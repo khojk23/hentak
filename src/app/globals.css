@@ -2,7 +2,40 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ── Light mode (default) ─────────────────────────────────────────────── */
 :root {
+  /* Ink scale: high numbers = light backgrounds, low numbers = dark text */
+  --ink-950: #f9f5ee;
+  --ink-900: #f2ece0;
+  --ink-800: #e8e0d4;
+  --ink-700: #d2c9bc;
+  --ink-600: #b0a89c;
+  --ink-500: #8a8278;
+  --ink-400: #6a6258;
+  --ink-300: #524c48;
+  --ink-200: #3c3834;
+  --ink-100: #2a2622;
+  --ink-50:  #1a1612;
+
+  --background: #f9f5ee;
+  --foreground: #1a1612;
+}
+
+/* ── Dark mode ────────────────────────────────────────────────────────── */
+.dark {
+  /* Ink scale: high numbers = dark backgrounds, low numbers = light text */
+  --ink-950: #0e0c09;
+  --ink-900: #1a1412;
+  --ink-800: #2d2921;
+  --ink-700: #3c3530;
+  --ink-600: #5a504a;
+  --ink-500: #72685e;
+  --ink-400: #90847a;
+  --ink-300: #b0a59a;
+  --ink-200: #d4c9b8;
+  --ink-100: #ede7dc;
+  --ink-50:  #f5f0e8;
+
   --background: #1a1612;
   --foreground: #f5f0e8;
 }
@@ -17,10 +50,12 @@ body {
   font-family: Inter, system-ui, sans-serif;
 }
 
-/* Native date/select on dark bg */
-input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: invert(0.7);
-}
+/* Date picker icon — visible on both themes */
+:root input[type="date"]::-webkit-calendar-picker-indicator { filter: none; }
+.dark input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); }
+
+/* Select option text always readable */
+select option { background: var(--background); color: var(--foreground); }
 
 @layer utilities {
   .text-balance { text-wrap: balance; }

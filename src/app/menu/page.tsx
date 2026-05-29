@@ -87,13 +87,13 @@ export default function MenuPage() {
                   {/* Name — hover shows dish photo if available */}
                   {item.image_url ? (
                     <LinkPreview imageSrc={item.image_url} imageAlt={item.name} width={260} height={180}>
-                      <h2 className="font-bold text-white text-lg tracking-wide hover:text-saffron-300 transition-colors cursor-default inline-block">
+                      <h2 className="font-bold text-foreground text-lg tracking-wide hover:text-saffron-300 transition-colors cursor-default inline-block">
                         {item.name}
                         <span className="ml-1.5 text-saffron-600 text-xs align-middle">✦</span>
                       </h2>
                     </LinkPreview>
                   ) : (
-                    <h2 className="font-bold text-white text-lg tracking-wide">{item.name}</h2>
+                    <h2 className="font-bold text-foreground text-lg tracking-wide">{item.name}</h2>
                   )}
                   {item.meitei && <p className="text-ink-500 text-xs mt-0.5">{item.meitei}</p>}
                 </div>

@@ -27,7 +27,7 @@ export default function ContactPage() {
       {/* Header */}
       <div className="bg-[#0a0806] py-16 text-center px-4 border-b border-ink-800">
         <p className="text-saffron-500 text-[10px] font-bold tracking-[0.4em] uppercase mb-3">Get In Touch</p>
-        <h1 className="font-black text-5xl sm:text-6xl text-white uppercase tracking-tight mb-3">Contact</h1>
+        <h1 className="font-black text-5xl sm:text-6xl text-foreground uppercase tracking-tight mb-3">Contact</h1>
         <div className="w-10 h-0.5 bg-saffron-500 mx-auto mb-4" />
         <p className="text-ink-400 max-w-xl mx-auto text-sm leading-relaxed">
           Reservations, private dining, press, or just a hello — we&apos;d love to hear from you.
@@ -70,7 +70,7 @@ export default function ContactPage() {
 
           {/* Form */}
           <div className="bg-ink-900 rounded-2xl border border-ink-700 p-8">
-            <h2 className="font-black text-2xl text-white uppercase tracking-tight mb-6">Send a Message</h2>
+            <h2 className="font-black text-2xl text-foreground uppercase tracking-tight mb-6">Send a Message</h2>
 
             {status === "success" ? (
               <div className="text-center py-12">
@@ -121,7 +121,7 @@ export default function ContactPage() {
                 </div>
 
                 <button type="submit" disabled={status==="submitting"}
-                  className="w-full py-4 bg-saffron-600 hover:bg-saffron-500 disabled:opacity-60 text-white font-bold tracking-[0.2em] uppercase text-xs rounded-lg transition-colors">
+                  className="w-full py-4 bg-saffron-600 hover:bg-saffron-500 disabled:opacity-60 text-foreground font-bold tracking-[0.2em] uppercase text-xs rounded-lg transition-colors">
                   {status==="submitting" ? "Sending…" : "Send Message"}
                 </button>
               </form>

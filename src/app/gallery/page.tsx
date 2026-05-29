@@ -17,7 +17,7 @@ export default async function GalleryPage() {
       {/* Header */}
       <div className="bg-[#0a0806] py-16 text-center px-4 border-b border-ink-800">
         <p className="text-saffron-500 text-[10px] font-bold tracking-[0.4em] uppercase mb-3">Visual Stories</p>
-        <h1 className="font-black text-5xl sm:text-6xl text-white uppercase tracking-tight mb-3">Gallery</h1>
+        <h1 className="font-black text-5xl sm:text-6xl text-foreground uppercase tracking-tight mb-3">Gallery</h1>
         <div className="w-10 h-0.5 bg-saffron-500 mx-auto mb-4" />
         <p className="text-ink-400 max-w-xl mx-auto text-sm leading-relaxed">
           The colours of Manipur — on the plate, in the kitchen, in the light.

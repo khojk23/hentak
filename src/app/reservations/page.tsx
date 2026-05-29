@@ -42,7 +42,7 @@ export default function ReservationsPage() {
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="font-black text-3xl text-white uppercase tracking-tight mb-3">Table Reserved!</h2>
+          <h2 className="font-black text-3xl text-foreground uppercase tracking-tight mb-3">Table Reserved!</h2>
           <p className="text-ink-300 text-sm leading-relaxed mb-2">
             Thank you, <strong className="text-white">{form.name}</strong>. Your table for{" "}
             <strong className="text-white">{form.guests} {Number(form.guests)===1?"guest":"guests"}</strong> on{" "}
@@ -69,7 +69,7 @@ export default function ReservationsPage() {
       {/* Header */}
       <div className="bg-[#0a0806] py-16 text-center px-4 border-b border-ink-800">
         <p className="text-saffron-500 text-[10px] font-bold tracking-[0.4em] uppercase mb-3">Join Us</p>
-        <h1 className="font-black text-5xl sm:text-6xl text-white uppercase tracking-tight mb-3">Reservations</h1>
+        <h1 className="font-black text-5xl sm:text-6xl text-foreground uppercase tracking-tight mb-3">Reservations</h1>
         <div className="w-10 h-0.5 bg-saffron-500 mx-auto mb-4" />
         <p className="text-ink-400 max-w-md mx-auto text-sm">Book your table at Hentak. For parties of 9 or more, please call us.</p>
       </div>
@@ -80,7 +80,7 @@ export default function ReservationsPage() {
           {/* Form */}
           <div className="lg:col-span-3">
             <form onSubmit={handleSubmit} noValidate className="bg-ink-900 rounded-2xl border border-ink-700 p-8">
-              <h2 className="font-black text-2xl text-white uppercase tracking-tight mb-7">Your Details</h2>
+              <h2 className="font-black text-2xl text-foreground uppercase tracking-tight mb-7">Your Details</h2>
 
               {status === "error" && (
                 <div className="mb-6 flex items-start gap-3 bg-red-950/60 border border-red-800 rounded-lg px-4 py-3">
@@ -137,7 +137,7 @@ export default function ReservationsPage() {
               </Field>
 
               <button type="submit" disabled={status==="submitting"}
-                className="w-full py-4 bg-saffron-600 hover:bg-saffron-500 disabled:opacity-60 disabled:cursor-not-allowed text-white font-bold tracking-[0.2em] uppercase text-xs rounded-lg transition-colors flex items-center justify-center gap-2">
+                className="w-full py-4 bg-saffron-600 hover:bg-saffron-500 disabled:opacity-60 disabled:cursor-not-allowed text-foreground font-bold tracking-[0.2em] uppercase text-xs rounded-lg transition-colors flex items-center justify-center gap-2">
                 {status === "submitting" ? (
                   <><svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"/></svg>Confirming…</>
                 ) : "Confirm Reservation"}
@@ -149,7 +149,7 @@ export default function ReservationsPage() {
           {/* Sidebar */}
           <aside className="lg:col-span-2 space-y-5">
             <div className="bg-[#0a0806] rounded-2xl p-7 border border-ink-800">
-              <h3 className="font-black text-lg text-white uppercase tracking-tight mb-5">Contact</h3>
+              <h3 className="font-black text-lg text-foreground uppercase tracking-tight mb-5">Contact</h3>
               <div className="space-y-4">
                 {[
                   { icon: "📞", label:"Phone", value: RESTAURANT.phone, href: `tel:${RESTAURANT.phone}` },
@@ -167,7 +167,7 @@ export default function ReservationsPage() {
             </div>
 
             <div className="bg-ink-900 rounded-2xl p-7 border border-saffron-800/50">
-              <h3 className="font-black text-lg text-white uppercase tracking-tight mb-4">Good to Know</h3>
+              <h3 className="font-black text-lg text-foreground uppercase tracking-tight mb-4">Good to Know</h3>
               <ul className="space-y-3">
                 {[
                   "Tables held for 15 minutes past booking time",

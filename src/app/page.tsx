@@ -93,7 +93,7 @@ export default async function HomePage() {
             <p className="text-saffron-400 text-[10px] font-bold tracking-[0.5em] uppercase mb-5">
               Imphal · Manipur · India
             </p>
-            <h1 className="text-white font-black text-5xl sm:text-6xl md:text-7xl tracking-widest uppercase leading-none mb-4">
+            <h1 className="text-foreground font-black text-5xl sm:text-6xl md:text-7xl tracking-widest uppercase leading-none mb-4">
               HENTAK.
             </h1>
             <div className="flex items-center justify-center gap-4 mb-5">
@@ -111,7 +111,7 @@ export default async function HomePage() {
               <Link href="/reservations" className="px-10 py-4 bg-saffron-600 hover:bg-saffron-500 text-white font-bold tracking-[0.2em] uppercase text-xs rounded transition-colors">
                 Reserve a Table
               </Link>
-              <Link href="/menu" className="px-10 py-4 border-2 border-white/30 hover:border-saffron-400 hover:text-saffron-400 text-white font-bold tracking-[0.2em] uppercase text-xs rounded transition-colors">
+              <Link href="/menu" className="px-10 py-4 border-2 border-ink-600 hover:border-saffron-400 hover:text-saffron-400 text-foreground font-bold tracking-[0.2em] uppercase text-xs rounded transition-colors">
                 View Menu
               </Link>
             </div>
@@ -132,9 +132,9 @@ export default async function HomePage() {
           <div className="grid md:grid-cols-2 gap-14 lg:gap-24 items-center">
             <div>
               <p className="text-saffron-500 text-[10px] font-bold tracking-[0.4em] uppercase mb-3">Our Story</p>
-              <h2 className="font-black text-4xl sm:text-5xl text-white uppercase tracking-tight leading-tight mb-4">
+              <h2 className="font-black text-4xl sm:text-5xl text-foreground uppercase tracking-tight leading-tight mb-4">
                 The Soul of<br />
-                <span className="text-forest-400">Meitei</span> Kitchen
+                <span className="text-forest-500">Meitei</span> Kitchen
               </h2>
               <div className="w-12 h-0.5 bg-saffron-500 mb-6" />
               <p className="text-ink-300 leading-relaxed mb-5 text-sm sm:text-base">
@@ -175,7 +175,7 @@ export default async function HomePage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-14">
             <p className="text-saffron-500 text-[10px] font-bold tracking-[0.4em] uppercase mb-3">Our Philosophy</p>
-            <h2 className="font-black text-4xl sm:text-5xl text-white uppercase tracking-tight">How We Cook</h2>
+            <h2 className="font-black text-4xl sm:text-5xl text-foreground uppercase tracking-tight">How We Cook</h2>
             <div className="w-12 h-0.5 bg-saffron-500 mx-auto mt-5" />
           </div>
           <div className="grid md:grid-cols-3 gap-6">
@@ -184,7 +184,7 @@ export default async function HomePage() {
                 <div className="w-12 h-12 rounded-full bg-saffron-600/20 border border-saffron-500/50 flex items-center justify-center text-saffron-400 mb-5">
                   {p.icon}
                 </div>
-                <h3 className="text-white font-bold text-lg mb-3">{p.title}</h3>
+                <h3 className="text-foreground font-bold text-lg mb-3">{p.title}</h3>
                 <p className="text-ink-300 text-sm leading-relaxed">{p.body}</p>
               </div>
             ))}
@@ -198,7 +198,7 @@ export default async function HomePage() {
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-12">
             <div>
               <p className="text-saffron-500 text-[10px] font-bold tracking-[0.4em] uppercase mb-2">From the Kitchen</p>
-              <h2 className="font-black text-4xl sm:text-5xl text-white uppercase tracking-tight">Featured Dishes</h2>
+              <h2 className="font-black text-4xl sm:text-5xl text-foreground uppercase tracking-tight">Featured Dishes</h2>
               <div className="w-10 h-0.5 bg-saffron-500 mt-4" />
             </div>
             <Link href="/menu" className="text-[10px] font-bold tracking-[0.3em] uppercase text-ink-400 hover:text-saffron-400 transition-colors flex items-center gap-2 group">
@@ -212,7 +212,7 @@ export default async function HomePage() {
                   <Image src={dish.image} alt={dish.alt} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width:640px) 100vw,(max-width:1024px) 50vw,25vw" />
                 </div>
                 <div className="p-5 border-t border-ink-600">
-                  <h3 className="font-bold text-white text-base mb-1">{dish.name}</h3>
+                  <h3 className="font-bold text-foreground text-base mb-1">{dish.name}</h3>
                   <p className="text-ink-400 text-xs leading-relaxed mb-3">{dish.description}</p>
                   <p className="text-saffron-400 font-black text-sm">₹{dish.price}</p>
                 </div>
@@ -231,12 +231,12 @@ export default async function HomePage() {
             </div>
             <div>
               <p className="text-saffron-500 text-[10px] font-bold tracking-[0.4em] uppercase mb-3">When To Visit</p>
-              <h2 className="font-black text-4xl sm:text-5xl text-white uppercase tracking-tight mb-2">Opening Hours</h2>
+              <h2 className="font-black text-4xl sm:text-5xl text-foreground uppercase tracking-tight mb-2">Opening Hours</h2>
               <div className="w-10 h-0.5 bg-saffron-500 mb-8" />
               <div className="divide-y divide-ink-700">
                 {(hours ?? []).map((h) => (
                   <div key={h.day} className={`flex justify-between items-start py-3.5 ${!h.is_open ? "opacity-30" : ""}`}>
-                    <span className="font-bold text-white text-sm w-28 shrink-0">{h.day}</span>
+                    <span className="font-bold text-foreground text-sm w-28 shrink-0">{h.day}</span>
                     <span className={`text-xs text-right leading-relaxed ${h.is_open ? "text-ink-300" : "italic text-ink-500"}`}>{h.hours}</span>
                   </div>
                 ))}
@@ -251,7 +251,7 @@ export default async function HomePage() {
       <section className="py-16 bg-ink-900 border-b border-ink-700">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <p className="text-saffron-500 text-[10px] font-bold tracking-[0.4em] uppercase mb-3">Follow the Journey</p>
-          <h2 className="font-black text-3xl text-white uppercase tracking-tight mb-4">@hentak_restaurant</h2>
+          <h2 className="font-black text-3xl text-foreground uppercase tracking-tight mb-4">@hentak_restaurant</h2>
           <p className="text-ink-400 text-sm mb-8 max-w-sm mx-auto">Daily stories from the kitchen — on Instagram.</p>
           <a href={RESTAURANT.instagram} target="_blank" rel="noopener noreferrer"
             className="inline-flex items-center gap-2.5 px-7 py-3.5 border-2 border-saffron-500 hover:bg-saffron-600 hover:border-saffron-600 text-saffron-400 hover:text-white text-xs font-bold tracking-[0.2em] uppercase rounded transition-colors">
@@ -269,13 +269,13 @@ export default async function HomePage() {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-xl mb-8 shadow-lg">
             <Image src="/hentak-logo.jpg" alt="Hentak" width={56} height={56} className="object-contain" />
           </div>
-          <h2 className="font-black text-4xl sm:text-5xl text-white uppercase tracking-tight mb-2">Reserve Your Table</h2>
+          <h2 className="font-black text-4xl sm:text-5xl text-foreground uppercase tracking-tight mb-2">Reserve Your Table</h2>
           <div className="w-12 h-0.5 bg-saffron-500 mx-auto my-5" />
           <p className="text-ink-300 mb-10 text-sm leading-relaxed">
             Experience Nouvelle Manipuri Cuisine. Walk-ins welcome when available — advance booking recommended for evenings and weekends.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/reservations" className="px-9 py-4 bg-saffron-600 hover:bg-saffron-500 text-white font-bold tracking-[0.2em] uppercase text-xs rounded transition-colors shadow-lg">
+            <Link href="/reservations" className="px-9 py-4 bg-saffron-600 hover:bg-saffron-500 text-foreground font-bold tracking-[0.2em] uppercase text-xs rounded transition-colors shadow-lg">
               Book a Table
             </Link>
             <a href={`tel:${RESTAURANT.phone}`} className="px-9 py-4 border-2 border-white/40 hover:border-saffron-400 text-white hover:text-saffron-400 font-bold tracking-[0.2em] uppercase text-xs rounded transition-colors">

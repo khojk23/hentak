@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const NAV = [
   { href: "/admin",           label: "Dashboard", icon: "📊" },
@@ -35,7 +36,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           <span className="text-white font-black text-sm tracking-widest uppercase">HENTAK.</span>
           <span className="text-ink-600 text-xs">Admin</span>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+          <ThemeToggle />
           <a href="/" target="_blank" className="text-ink-500 hover:text-ink-300 text-xs transition-colors">View Site ↗</a>
           <button onClick={logout} disabled={busy} className="text-ink-500 hover:text-red-400 text-xs transition-colors">
             {busy ? "…" : "Sign Out"}

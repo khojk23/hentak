@@ -19,7 +19,7 @@ export default function Footer() {
                 className="rounded-sm object-contain brightness-0 invert"
               />
               <div>
-                <p className="text-white font-bold tracking-widest text-sm uppercase">HENTAK.</p>
+                <p className="text-foreground font-bold tracking-widest text-sm uppercase">HENTAK.</p>
                 <p className="text-ink-500 text-[9px] tracking-[0.2em] uppercase">Nouvelle Manipuri Cuisine</p>
               </div>
             </div>
