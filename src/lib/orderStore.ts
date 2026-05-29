@@ -18,6 +18,7 @@ export interface Order {
   total:        number;
   status:       OrderStatus;
   createdAt:    string;
+  servedAt?:    string;
 }
 
 // Module-level singleton — persists for the lifetime of the server process
@@ -41,7 +42,11 @@ export const orderStore = {
   updateStatus(id: string, status: OrderStatus): boolean {
     const order = store.get(id);
     if (!order) return false;
-    store.set(id, { ...order, status });
+    store.set(id, {
+      ...order,
+      status,
+      ...(status === "served" ? { servedAt: new Date().toISOString() } : {}),
+    });
     return true;
   },
   count(): number {
