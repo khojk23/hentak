@@ -1,16 +1,36 @@
-import { createClient } from "@supabase/supabase-js";
+import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
-const url  = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
-const svc  = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+// Lazy singletons — deferred until first use so Next.js build-time
+// module evaluation doesn't throw before env vars are injected.
+let _public: SupabaseClient | null = null;
+let _admin:  SupabaseClient | null = null;
 
-// Public client — for reading data (browser + server)
-export const supabase = createClient(url, anon);
+function publicClient(): SupabaseClient {
+  if (!_public) {
+    _public = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    );
+  }
+  return _public;
+}
 
-// Admin client — bypasses RLS, server-side only!
-export const supabaseAdmin = createClient(url, svc, {
-  auth: { persistSession: false, autoRefreshToken: false },
-});
+function adminClient(): SupabaseClient {
+  if (!_admin) {
+    _admin = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!,
+      { auth: { persistSession: false, autoRefreshToken: false } },
+    );
+  }
+  return _admin;
+}
+
+// Proxy lets callers keep using `supabase.from(...)` syntax unchanged
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const supabase      = new Proxy({} as SupabaseClient, { get: (_, p) => (publicClient() as unknown as Record<PropertyKey, unknown>)[p as string] });
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const supabaseAdmin = new Proxy({} as SupabaseClient, { get: (_, p) => (adminClient()  as unknown as Record<PropertyKey, unknown>)[p as string] });
 
 // ── Types ──────────────────────────────────────────────
 export interface MenuItem {
